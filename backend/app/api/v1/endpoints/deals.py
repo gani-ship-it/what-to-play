@@ -58,27 +58,39 @@ async def list_deals(
     else:  # default: discount
         query = query.order_by(desc(GamePrice.discount_percent), asc(GamePrice.price))
 
-    # Total count
-    count_query = select(func.count()).select_from(query.subquery())
-    total_result = await db.execute(count_query)
-    total = total_result.scalar_one_or_none() or 0
-
-    # Paginate
-    offset = (page - 1) * page_size
-    query = query.offset(offset).limit(page_size)
-
+    # Execute query to fetch prices
     result = await db.execute(query)
-    prices = result.scalars().all()
+    all_prices = result.scalars().all()
+
+    # If browsing All Stores (no store_slug filter), deduplicate by game_id to show best deal per game
+    if not store_slug:
+        seen_games = set()
+        deduped_prices = []
+        for p in all_prices:
+            if p.game_id not in seen_games:
+                seen_games.add(p.game_id)
+                deduped_prices.append(p)
+        filtered_prices = deduped_prices
+    else:
+        filtered_prices = all_prices
+
+    total = len(filtered_prices)
+    offset = (page - 1) * page_size
+    paginated_prices = filtered_prices[offset : offset + page_size]
 
     items = []
-    for p in prices:
+    for p in paginated_prices:
+        img = p.game.cover_image or p.game.background_image
+        if p.game.steam_appid and (not img or "unsplash.com" in img):
+            img = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{p.game.steam_appid}/library_600x900.jpg"
+
         items.append(
             DealSummarySchema(
                 id=p.id,
                 game_id=p.game.id,
                 game_slug=p.game.slug,
                 game_title=p.game.title,
-                cover_image=p.game.cover_image or p.game.background_image,
+                cover_image=img,
                 genres=p.game.genres or [],
                 store_name=p.store.name,
                 store_slug=p.store.slug,

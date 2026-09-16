@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class PCRequirementsSchema(BaseModel):
@@ -43,6 +43,15 @@ class GameSummarySchema(BaseModel):
     platforms: List[str] = Field(default_factory=list)
     is_popular: bool = False
     is_anticipated: bool = False
+
+    @model_validator(mode="after")
+    def populate_steam_media(self):
+        if self.steam_appid:
+            if not self.cover_image or "unsplash.com" in self.cover_image:
+                self.cover_image = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{self.steam_appid}/library_600x900.jpg"
+            if not self.background_image or "unsplash.com" in self.background_image:
+                self.background_image = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{self.steam_appid}/header.jpg"
+        return self
 
     class Config:
         from_attributes = True

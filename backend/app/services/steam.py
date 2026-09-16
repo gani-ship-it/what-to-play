@@ -265,10 +265,26 @@ async def fetch_steam_store_media(steam_appid: int) -> Optional[Dict[str, Any]]:
                     for s in app_data.get("screenshots", [])
                     if s.get("path_full")
                 ]
+                movies = []
+                for m in app_data.get("movies", []):
+                    m_id = m.get("id")
+                    m_name = m.get("name") or "Official Gameplay Trailer"
+                    m_thumb = m.get("thumbnail")
+                    m_mp4 = m.get("mp4", {}).get("max") or m.get("mp4", {}).get("480")
+                    if not m_mp4 and m_id:
+                        m_mp4 = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{m_id}/movie480.mp4"
+                    if m_mp4:
+                        movies.append({
+                            "name": m_name,
+                            "video_url": m_mp4,
+                            "preview_image": m_thumb,
+                        })
+
                 header = app_data.get("header_image")
                 capsule = f"https://cdn.cloudflare.steamstatic.com/steam/apps/{steam_appid}/library_600x900.jpg"
                 return {
                     "screenshots": screenshots,
+                    "trailers": movies,
                     "header_image": header,
                     "cover_image": capsule,
                     "description": app_data.get("short_description"),

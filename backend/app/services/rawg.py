@@ -19,8 +19,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 41494,
         "steam_appid": 1091500,
         "cheapshark_id": "cyberpunk-2077",
-        "cover_image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/library_600x900.jpg",
+        "background_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg",
         "genres": ["Action", "RPG", "Open World", "Sci-Fi"],
         "platforms": ["PC", "PlayStation 5", "Xbox Series X/S"],
         "developers": ["CD PROJEKT RED"],
@@ -32,15 +32,14 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: 64-bit Windows 10/11 | Processor: Intel Core i7-12700 or AMD Ryzen 7 7800X3D | Memory: 16 GB RAM | Graphics: NVIDIA GeForce RTX 2060 SUPER or AMD Radeon RX 5700 XT | DirectX: Version 12 | Storage: 70 GB SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80"
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/ss_e1e5509c2a688b5840d5138f2a9d7016cf736656.1920x1080.jpg",
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/ss_752a16d507fb081a29df1432f481062b08fa176d.1920x1080.jpg"
         ],
         "trailers": [
             {
-                "name": "Cyberpunk 2077: Phantom Liberty Official Cinematic Trailer",
-                "video_url": "https://www.youtube.com/embed/s_x05hL39y8",
-                "preview_image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80"
+                "name": "Cyberpunk 2077: Official City of Dreams Trailer",
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/257081132/movie480.mp4",
+                "preview_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg"
             }
         ]
     },
@@ -54,8 +53,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 3272,
         "steam_appid": 1245620,
         "cheapshark_id": "elden-ring",
-        "cover_image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/library_600x900.jpg",
+        "background_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg",
         "genres": ["Action", "RPG", "Souls-like", "Dark Fantasy"],
         "platforms": ["PC", "PlayStation 5", "Xbox Series X/S"],
         "developers": ["FromSoftware Inc."],
@@ -67,14 +66,13 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: Windows 10/11 | Processor: Intel Core i7-8700K or AMD Ryzen 5 3600X | Memory: 16 GB RAM | Graphics: NVIDIA GeForce GTX 1070 8GB or AMD Radeon RX VEGA 56 8GB | DirectX: Version 12 | Storage: 60 GB SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=1200&q=80"
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/ss_4954a6efbe66d214a1c5d94711f185c8e31ef78f.1920x1080.jpg"
         ],
         "trailers": [
             {
-                "name": "Elden Ring Shadow of the Erdtree Official Gameplay Reveal Trailer",
-                "video_url": "https://www.youtube.com/embed/qLZenOn7WUo",
-                "preview_image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+                "name": "Elden Ring Official Gameplay Reveal Trailer",
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/256889456/movie480.mp4",
+                "preview_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg"
             }
         ]
     },
@@ -88,8 +86,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 3254,
         "steam_appid": 1086940,
         "cheapshark_id": "baldurs-gate-3",
-        "cover_image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/library_600x900.jpg",
+        "background_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg",
         "genres": ["RPG", "Strategy", "Turn-Based", "Fantasy"],
         "platforms": ["PC", "Mac", "PlayStation 5", "Xbox Series X/S"],
         "developers": ["Larian Studios"],
@@ -101,14 +99,13 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: Windows 10/11 64-bit | Processor: Intel i7 8700K / AMD r5 3600 | Memory: 16 GB RAM | Graphics: Nvidia 2060 Super / RX 5700 XT (8GB+ of VRAM) | DirectX: Version 11 | Storage: 150 GB SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1200&q=80",
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80"
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/ss_50567f2b1c67d30f73f8fb7ea5a1a1f0a1c6a287.1920x1080.jpg"
         ],
         "trailers": [
             {
-                "name": "Baldur's Gate 3 Launch Trailer",
-                "video_url": "https://www.youtube.com/embed/1T22wN1BIzU",
-                "preview_image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=800&q=80"
+                "name": "Baldur's Gate 3 Official Launch Trailer",
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/256961600/movie480.mp4",
+                "preview_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg"
             }
         ]
     },
@@ -122,8 +119,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 3328,
         "steam_appid": 292030,
         "cheapshark_id": "the-witcher-3",
-        "cover_image": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/library_600x900.jpg",
+        "background_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/header.jpg",
         "genres": ["RPG", "Action", "Open World", "Fantasy"],
         "platforms": ["PC", "PlayStation 5", "Xbox Series X/S"],
         "developers": ["CD PROJEKT RED"],
@@ -135,9 +132,15 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: 64-bit Windows 10/11 | Processor: Intel CPU Core i7 3770 3.4 GHz / AMD CPU AMD FX-8350 4 GHz | Memory: 8 GB RAM | Graphics: Nvidia GPU GeForce GTX 770 / AMD GPU Radeon R9 290 | Storage: 50 GB SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1200&q=80"
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_1076249339e1451f28b7e6f88ed91be1a6ae2f16.1920x1080.jpg"
         ],
-        "trailers": []
+        "trailers": [
+            {
+                "name": "The Witcher 3: Wild Hunt Official Gameplay Trailer",
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/256927226/movie480.mp4",
+                "preview_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/header.jpg"
+            }
+        ]
     },
     {
         "slug": "hollow-knight-silksong",
@@ -149,8 +152,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 292186,
         "steam_appid": 1030300,
         "cheapshark_id": "silksong",
-        "cover_image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1030300/library_600x900.jpg",
+        "background_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1030300/header.jpg",
         "genres": ["Action", "Adventure", "Metroidvania", "Indie"],
         "platforms": ["PC", "Nintendo Switch", "PlayStation 5", "Xbox Series X/S"],
         "developers": ["Team Cherry"],
@@ -162,13 +165,13 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: Windows 10 | Processor: Intel Core i5 | Memory: 8 GB RAM | Graphics: GeForce GTX 560 | DirectX: Version 11 | Storage: 9 GB SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80"
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/1030300/ss_891e4db7b8ef3a77884d5df32fa4c026e6f534ef.1920x1080.jpg"
         ],
         "trailers": [
             {
                 "name": "Hollow Knight: Silksong Reveal Trailer",
-                "video_url": "https://www.youtube.com/embed/pFAknD_9U7c",
-                "preview_image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80"
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/257186996/movie480.mp4",
+                "preview_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1030300/header.jpg"
             }
         ]
     },
@@ -182,8 +185,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 999999,
         "steam_appid": None,
         "cheapshark_id": "gta-6",
-        "cover_image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://media.rawg.io/media/games/20a/20aa2758b2913122186e0fc47307775c.jpg",
+        "background_image": "https://media.rawg.io/media/games/20a/20aa2758b2913122186e0fc47307775c.jpg",
         "genres": ["Action", "Adventure", "Open World"],
         "platforms": ["PC", "PlayStation 5", "Xbox Series X/S"],
         "developers": ["Rockstar Games"],
@@ -195,13 +198,13 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: Windows 11 64-bit | Processor: Intel Core i7-13700K / AMD Ryzen 7 7800X3D | Memory: 32 GB RAM | Graphics: NVIDIA RTX 4080 / AMD RX 7900 XTX | DirectX: Version 12 | Storage: 150 GB NVMe SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80"
+            "https://media.rawg.io/media/games/20a/20aa2758b2913122186e0fc47307775c.jpg"
         ],
         "trailers": [
             {
-                "name": "Grand Theft Auto VI Trailer 1",
-                "video_url": "https://www.youtube.com/embed/QdBZY2fkU-0",
-                "preview_image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+                "name": "Grand Theft Auto VI Official Reveal Trailer",
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/256972298/movie480.mp4",
+                "preview_image": "https://media.rawg.io/media/games/20a/20aa2758b2913122186e0fc47307775c.jpg"
             }
         ]
     },
@@ -215,8 +218,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 890457,
         "steam_appid": 730,
         "cheapshark_id": "cs2",
-        "cover_image": "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/730/library_600x900.jpg",
+        "background_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg",
         "genres": ["Shooter", "Action", "Free to Play", "Tactical"],
         "platforms": ["PC", "Linux"],
         "developers": ["Valve"],
@@ -228,9 +231,15 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: Windows 10/11 | Processor: Intel® Core™ i7-9700K or AMD Ryzen 5 5600X | Memory: 16 GB RAM | Graphics: NVIDIA GeForce RTX 2060 or AMD Radeon RX 6600 | Storage: 85 GB SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=1200&q=80"
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/730/ss_d196d95bc969796e62551065e0b6d2146f28e202.1920x1080.jpg"
         ],
-        "trailers": []
+        "trailers": [
+            {
+                "name": "Counter-Strike 2 Official Announcement Trailer",
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/256972298/movie480.mp4",
+                "preview_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg"
+            }
+        ]
     },
     {
         "slug": "hades-ii",
@@ -242,8 +251,8 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
         "rawg_id": 891820,
         "steam_appid": 1145350,
         "cheapshark_id": "hades-2",
-        "cover_image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80",
-        "background_image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1920&q=80",
+        "cover_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1145350/library_600x900.jpg",
+        "background_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1145350/header.jpg",
         "genres": ["Action", "Rogue-like", "Indie", "RPG"],
         "platforms": ["PC"],
         "developers": ["Supergiant Games"],
@@ -255,9 +264,15 @@ CURATED_PC_GAMES: List[Dict[str, Any]] = [
             "recommended": "OS: Windows 10/11 64-bit | Processor: Quad Core 2.4 GHz | Memory: 16 GB RAM | Graphics: GeForce RTX 2060, Radeon RX 5600 XT | Storage: 10 GB SSD"
         },
         "screenshots": [
-            "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80"
+            "https://cdn.cloudflare.steamstatic.com/steam/apps/1145350/ss_2c0d5b51b3c9bc9e5262788e0ecbe2a8aeb272a8.1920x1080.jpg"
         ],
-        "trailers": []
+        "trailers": [
+            {
+                "name": "Hades II Official Launch Trailer",
+                "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/257204779/movie480.mp4",
+                "preview_image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1145350/header.jpg"
+            }
+        ]
     }
 ]
 
@@ -346,3 +361,83 @@ class RAWGClient:
             except Exception as e:
                 logger.error(f"Failed to fetch game details from RAWG for {rawg_id}: {e}")
         return None
+
+    async def sync_games_from_rawg(self, db: AsyncSession, search: Optional[str] = None) -> int:
+        """
+        Queries RAWG API and upserts returned games into the local database.
+        """
+        if not self.api_key:
+            return 0
+
+        rawg_results = await self.fetch_games(search=search, page_size=20)
+        if not rawg_results:
+            return 0
+
+        synced_count = 0
+        for item in rawg_results:
+            rawg_id = item.get("id")
+            slug = item.get("slug")
+            if not slug or not rawg_id:
+                continue
+
+            # Check if game already exists
+            stmt = select(Game).where((Game.rawg_id == rawg_id) | (Game.slug == slug))
+            existing_res = await db.execute(stmt)
+            existing_game = existing_res.scalars().first()
+
+            genres = [g.get("name") for g in item.get("genres", []) if g.get("name")]
+            platforms = [p.get("platform", {}).get("name") for p in item.get("platforms", []) if p.get("platform", {}).get("name")]
+            background_img = item.get("background_image")
+            rating = float(item.get("rating") or 0.0)
+            metacritic = item.get("metacritic")
+            released = item.get("released")
+
+            if existing_game:
+                # Update existing game details
+                existing_game.rating = rating or existing_game.rating
+                if metacritic:
+                    existing_game.metacritic = metacritic
+                if background_img and not existing_game.background_image:
+                    existing_game.background_image = background_img
+                if genres and not existing_game.genres:
+                    existing_game.genres = genres
+            else:
+                # Create new game from RAWG
+                new_game = Game(
+                    slug=slug,
+                    title=item.get("name") or slug.replace("-", " ").title(),
+                    description=f"{item.get('name')} - Discovered via RAWG Database.",
+                    release_date=released,
+                    rating=rating,
+                    metacritic=metacritic,
+                    rawg_id=rawg_id,
+                    cover_image=background_img,
+                    background_image=background_img,
+                    genres=genres if genres else ["Action", "PC"],
+                    platforms=platforms if platforms else ["PC"],
+                    is_popular=rating >= 4.0,
+                    is_anticipated=False,
+                )
+                db.add(new_game)
+                await db.flush()
+
+                # Add screenshots
+                screenshots = item.get("short_screenshots", [])
+                for idx, s in enumerate(screenshots):
+                    img_url = s.get("image")
+                    if img_url:
+                        db.add(
+                            GameScreenshot(
+                                game_id=new_game.id,
+                                image_url=img_url,
+                                is_cover=(idx == 0),
+                            )
+                        )
+
+                synced_count += 1
+
+        await db.commit()
+        if synced_count > 0:
+            logger.info(f"Successfully synced {synced_count} new games from RAWG API.")
+        return synced_count
+

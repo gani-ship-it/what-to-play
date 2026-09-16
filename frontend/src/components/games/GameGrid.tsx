@@ -24,7 +24,7 @@ export const GameGrid: React.FC<GameGridProps> = ({
             key={index}
             className="bg-[#14141c] border border-white/5 rounded-2xl overflow-hidden animate-pulse flex flex-col space-y-3"
           >
-            <div className="aspect-[16/9] w-full bg-zinc-800/60" />
+            <div className="aspect-[3/4] w-full bg-zinc-800/60" />
             <div className="p-4 space-y-3">
               <div className="flex gap-2">
                 <div className="h-4 w-12 bg-zinc-800/80 rounded" />

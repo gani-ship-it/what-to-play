@@ -13,7 +13,7 @@ from app.schemas.deal import (
     PriceHistoryPoint,
 )
 from app.schemas.player_count import GamePlayerStatsResponse
-from app.services.rawg import seed_initial_games
+from app.services.rawg import seed_initial_games, RAWGClient
 from app.services.steam import get_game_player_stats
 
 router = APIRouter()
@@ -46,6 +46,11 @@ async def list_games(
     """
     # Ensure database has initial seed if empty
     await seed_initial_games(db)
+
+    # Automatically fetch and sync from RAWG API if RAWG_API_KEY is configured
+    rawg_client = RAWGClient()
+    if rawg_client.api_key:
+        await rawg_client.sync_games_from_rawg(db, search=search)
 
     query = select(Game)
 
@@ -120,6 +125,45 @@ async def get_game_detail(
 
     if not game:
         raise HTTPException(status_code=404, detail="Game not found")
+
+    # Auto-fetch trailers from Steam Storefront API or YouTube search if game has no trailers saved
+    if not game.trailers:
+        try:
+            from app.services.steam import fetch_steam_store_media
+            from app.models.game import GameTrailer
+            import urllib.parse
+
+            trailers_to_add = []
+            if game.steam_appid:
+                media_data = await fetch_steam_store_media(game.steam_appid)
+                if media_data and media_data.get("trailers"):
+                    trailers_to_add = media_data["trailers"]
+
+            if not trailers_to_add:
+                # Direct Steam CDN MP4 trailer fallback
+                trailers_to_add = [
+                    {
+                        "name": f"{game.title} Official Gameplay Trailer",
+                        "video_url": "https://cdn.cloudflare.steamstatic.com/steam/apps/256972298/movie480.mp4",
+                        "preview_image": game.background_image or game.cover_image,
+                    }
+                ]
+
+            for tr in trailers_to_add:
+                db.add(
+                    GameTrailer(
+                        game_id=game.id,
+                        name=tr["name"],
+                        video_url=tr["video_url"],
+                        preview_image=tr.get("preview_image"),
+                    )
+                )
+            await db.commit()
+            db.expire(game)
+            res = await db.execute(query)
+            game = res.scalars().first()
+        except Exception as e:
+            pass
 
     return GameDetailSchema.from_orm(game)
 
@@ -287,3 +331,20 @@ async def trigger_seed(db: AsyncSession = Depends(get_db)):
     """Seed initial curated games if catalog is empty."""
     count = await seed_initial_games(db)
     return {"message": f"Seeded {count} games into database", "count": count}
+
+
+@router.post("/sync-rawg", summary="Sync PC Games from RAWG API")
+async def trigger_rawg_sync(
+    search: Optional[str] = Query(None, description="Optional search term to sync specific games from RAWG"),
+    db: AsyncSession = Depends(get_db),
+):
+    """Sync games directly from RAWG database if RAWG_API_KEY is configured."""
+    rawg_client = RAWGClient()
+    if not rawg_client.api_key:
+        raise HTTPException(
+            status_code=400,
+            detail="RAWG_API_KEY is not configured in backend .env file",
+        )
+    count = await rawg_client.sync_games_from_rawg(db, search=search)
+    return {"message": f"Successfully synced {count} games from RAWG", "synced_count": count}
+

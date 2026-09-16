@@ -6,7 +6,7 @@ import { HeroSpotlight } from './components/home/HeroSpotlight';
 import { DealsSection } from './components/deals/DealsSection';
 import { SearchBar } from './components/games/SearchBar';
 import { GameGrid } from './components/games/GameGrid';
-import { GameDetailModal } from './components/games/GameDetailModal';
+import { GameDetailPage } from './components/games/GameDetailPage';
 import { fetchGames } from './services/games';
 import type { GameSummary, GameFilterParams } from './types/game';
 
@@ -29,6 +29,33 @@ export const App: React.FC = () => {
     page: 1,
     page_size: 20,
   });
+
+  // Handle URL hash changes for direct page navigation (e.g. #game/cyberpunk-2077)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#game/')) {
+        const slug = hash.replace('#game/', '');
+        if (slug) setSelectedGameSlug(slug);
+      } else {
+        setSelectedGameSlug(null);
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const handleSelectGame = (slug: string) => {
+    setSelectedGameSlug(slug);
+    window.location.hash = `#game/${slug}`;
+  };
+
+  const handleBackToCatalog = () => {
+    setSelectedGameSlug(null);
+    window.location.hash = '';
+  };
 
   const loadGames = useCallback(async (currentFilters: GameFilterParams) => {
     setIsLoadingGames(true);
@@ -79,70 +106,76 @@ export const App: React.FC = () => {
 
       {/* Global Navigation with interactive Currency Switcher */}
       <Navbar
-        onSearchClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })}
+        onSearchClick={() => {
+          if (selectedGameSlug) handleBackToCatalog();
+          setTimeout(() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' }), 100);
+        }}
         currency={currency}
         onToggleCurrency={toggleCurrency}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-20">
-        {/* Featured Game Spotlight Carousel (Steam / Epic Games Store Style) */}
-        <section id="hero-spotlight" className="scroll-mt-20">
-          <HeroSpotlight
+        {selectedGameSlug ? (
+          /* Dedicated Standalone Game Details Page View */
+          <GameDetailPage
+            slug={selectedGameSlug}
             currency={currency}
-            onSelectGame={(slug) => setSelectedGameSlug(slug)}
+            onBack={handleBackToCatalog}
           />
-        </section>
+        ) : (
+          /* Main Homepage & Catalog View */
+          <>
+            {/* Featured Game Spotlight Carousel */}
+            <section id="hero-spotlight" className="scroll-mt-20">
+              <HeroSpotlight
+                currency={currency}
+                onSelectGame={handleSelectGame}
+              />
+            </section>
 
-        {/* Live Deals & Store Price Comparisons Section */}
-        <DealsSection
-          currency={currency}
-          onSelectGame={(slug) => setSelectedGameSlug(slug)}
-        />
-
-        {/* Interactive Game Discovery Section */}
-        <section id="catalog-discovery" className="space-y-8 scroll-mt-20">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Gamepad2 className="w-5 h-5 text-[#E50914]" />
-                <h2 className="text-2xl font-bold font-heading text-white">
-                  Featured PC Games & Discovery
-                </h2>
-              </div>
-              <p className="text-xs text-zinc-400">
-                Browse popular titles, filter by genre, check PC hardware requirements, and inspect media galleries.
-              </p>
-            </div>
-          </div>
-
-          {/* Search & Filter Bar */}
-          <div id="search-section">
-            <SearchBar
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              genres={genresList}
-              totalResults={totalGames}
+            {/* Live Deals & Store Price Comparisons Section */}
+            <DealsSection
+              currency={currency}
+              onSelectGame={handleSelectGame}
             />
-          </div>
 
-          {/* Games Card Grid */}
-          <GameGrid
-            games={games}
-            isLoading={isLoadingGames}
-            onSelectGame={(game) => setSelectedGameSlug(game.slug)}
-            onResetFilters={handleResetFilters}
-          />
-        </section>
+            {/* Interactive Game Discovery Section */}
+            <section id="catalog-discovery" className="space-y-8 scroll-mt-20">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Gamepad2 className="w-5 h-5 text-[#E50914]" />
+                    <h2 className="text-2xl font-bold font-heading text-white">
+                      Featured PC Games & Discovery
+                    </h2>
+                  </div>
+                  <p className="text-xs text-zinc-400">
+                    Browse popular titles, filter by genre, check PC hardware requirements, and inspect media galleries.
+                  </p>
+                </div>
+              </div>
+
+              {/* Search & Filter Bar */}
+              <div id="search-section">
+                <SearchBar
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                  genres={genresList}
+                  totalResults={totalGames}
+                />
+              </div>
+
+              {/* Games Card Grid */}
+              <GameGrid
+                games={games}
+                isLoading={isLoadingGames}
+                onSelectGame={(game) => handleSelectGame(game.slug)}
+                onResetFilters={handleResetFilters}
+              />
+            </section>
+          </>
+        )}
       </main>
-
-      {/* Game Details Modal Dialog with Deals & Price History Tab */}
-      {selectedGameSlug && (
-        <GameDetailModal
-          slug={selectedGameSlug}
-          currency={currency}
-          onClose={() => setSelectedGameSlug(null)}
-        />
-      )}
 
       {/* Global Footer */}
       <Footer />
