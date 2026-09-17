@@ -102,36 +102,43 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({ currency, onSelect
 
   const goToNextSlide = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % FEATURED_SPOTLIGHTS.length);
-    setProgress(0);
   }, []);
 
   const goToPrevSlide = useCallback(() => {
     setActiveIndex((prev) => (prev - 1 + FEATURED_SPOTLIGHTS.length) % FEATURED_SPOTLIGHTS.length);
-    setProgress(0);
   }, []);
 
   const goToSlide = (index: number) => {
     setActiveIndex(index);
-    setProgress(0);
   };
 
-  // Continuous auto-advancing slideshow timer with smooth progress bar
+  // Reset progress bar whenever active slide changes
+  useEffect(() => {
+    setProgress(0);
+  }, [activeIndex]);
+
+  // Auto-advance slides sequentially one-by-one every 6 seconds
   useEffect(() => {
     if (isPaused) return;
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev + (TICK_INTERVAL_MS / SLIDE_DURATION_MS) * 100;
-        if (next >= 100) {
-          goToNextSlide();
-          return 0;
-        }
-        return next;
-      });
+    const slideTimer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % FEATURED_SPOTLIGHTS.length);
+    }, SLIDE_DURATION_MS);
+
+    return () => clearInterval(slideTimer);
+  }, [isPaused, activeIndex]);
+
+  // Smooth progress bar update
+  useEffect(() => {
+    if (isPaused) return;
+
+    const progressTimer = setInterval(() => {
+      setProgress((prev) => Math.min(prev + (TICK_INTERVAL_MS / SLIDE_DURATION_MS) * 100, 100));
     }, TICK_INTERVAL_MS);
 
-    return () => clearInterval(interval);
-  }, [isPaused, goToNextSlide]);
+    return () => clearInterval(progressTimer);
+  }, [isPaused, activeIndex]);
+
 
   return (
     <div className="relative w-full rounded-3xl overflow-hidden border border-white/15 bg-[#0a0a0d] shadow-[0_20px_60px_rgba(0,0,0,0.9)] group select-none">
