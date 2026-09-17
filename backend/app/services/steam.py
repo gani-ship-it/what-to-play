@@ -293,3 +293,223 @@ async def fetch_steam_store_media(steam_appid: int) -> Optional[Dict[str, Any]]:
         logger.warning(f"Failed to fetch Steam store media for appid {steam_appid}: {exc}")
     return None
 
+
+async def fetch_steam_live_price(steam_appid: int, country_code: str = "in") -> Optional[Dict[str, Any]]:
+    """
+    Query Valve's official Steam Store API for real-time live price overview.
+    Zero fake data - returns exact live prices, original prices, and discounts directly from Steam.
+    """
+    url = f"https://store.steampowered.com/api/appdetails?appids={steam_appid}&cc={country_code}"
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+            if resp.status_code == 200:
+                data = resp.json()
+                app_info = data.get(str(steam_appid), {})
+                if app_info.get("success"):
+                    app_data = app_info.get("data", {})
+                    if app_data.get("is_free"):
+                        return {
+                            "is_free": True,
+                            "price": 0.0,
+                            "original_price": 0.0,
+                            "discount_percent": 0.0,
+                            "currency": "INR" if country_code == "in" else "USD",
+                        }
+                    
+                    price_overview = app_data.get("price_overview")
+                    if price_overview:
+                        return {
+                            "is_free": False,
+                            "price": float(price_overview.get("final", 0)) / 100.0,
+                            "original_price": float(price_overview.get("initial", 0)) / 100.0,
+                            "discount_percent": float(price_overview.get("discount_percent", 0)),
+                            "currency": price_overview.get("currency", "INR" if country_code == "in" else "USD"),
+                        }
+    except Exception as exc:
+        logger.warning(f"Failed to fetch live Steam price for appid {steam_appid}: {exc}")
+    return None
+
+
+async def sync_live_steam_prices(db: AsyncSession) -> int:
+    """
+    Sync real live prices directly from Steam Store API for all games in local database.
+    Replaces any static or stale price data with exact current Steam Store prices.
+    """
+    from app.models.deal import Store, GamePrice
+    
+    # Get Steam store
+    store_res = await db.execute(select(Store).where(Store.slug == "steam"))
+    steam_store = store_res.scalars().first()
+    if not steam_store:
+        steam_store = Store(
+            name="Steam",
+            slug="steam",
+            cheapshark_store_id="1",
+            icon_url="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg",
+        )
+        db.add(steam_store)
+        await db.flush()
+
+    games_res = await db.execute(select(Game).where(Game.steam_appid != None))
+    games = games_res.scalars().all()
+    
+    now = datetime.now(timezone.utc)
+    updated_count = 0
+
+    for game in games:
+        for cc, currency in [("in", "INR"), ("us", "USD")]:
+            steam_price_data = await fetch_steam_live_price(game.steam_appid, country_code=cc)
+            if not steam_price_data:
+                continue
+
+            price = steam_price_data["price"]
+            orig_price = steam_price_data["original_price"]
+            discount = steam_price_data["discount_percent"]
+            deal_url = f"https://store.steampowered.com/app/{game.steam_appid}"
+
+            # Check if GamePrice record exists
+            gp_stmt = select(GamePrice).where(
+                GamePrice.game_id == game.id,
+                GamePrice.store_id == steam_store.id,
+                GamePrice.currency == currency,
+            )
+            gp_res = await db.execute(gp_stmt)
+            gp = gp_res.scalars().first()
+
+            if gp:
+                gp.price = price
+                gp.original_price = orig_price
+                gp.discount_percent = discount
+                gp.deal_url = deal_url
+                gp.recorded_at = now
+            else:
+                gp = GamePrice(
+                    game_id=game.id,
+                    store_id=steam_store.id,
+                    country="IN" if currency == "INR" else "US",
+                    currency=currency,
+                    price=price,
+                    original_price=orig_price,
+                    discount_percent=discount,
+                    deal_url=deal_url,
+                    recorded_at=now,
+                )
+                db.add(gp)
+            updated_count += 1
+
+    await db.commit()
+    logger.info(f"Successfully synced {updated_count} live Steam store prices from official Valve API.")
+    return updated_count
+
+
+
+async def fetch_steam_live_price(steam_appid: int, country_code: str = "in") -> Optional[Dict[str, Any]]:
+    """
+    Query Valve's official Steam Store API for real-time live price overview.
+    Zero fake data - returns exact live prices, original prices, and discounts directly from Steam.
+    """
+    url = f"https://store.steampowered.com/api/appdetails?appids={steam_appid}&cc={country_code}"
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+            if resp.status_code == 200:
+                data = resp.json()
+                app_info = data.get(str(steam_appid), {})
+                if app_info.get("success"):
+                    app_data = app_info.get("data", {})
+                    if app_data.get("is_free"):
+                        return {
+                            "is_free": True,
+                            "price": 0.0,
+                            "original_price": 0.0,
+                            "discount_percent": 0.0,
+                            "currency": "INR" if country_code == "in" else "USD",
+                        }
+                    
+                    price_overview = app_data.get("price_overview")
+                    if price_overview:
+                        return {
+                            "is_free": False,
+                            "price": float(price_overview.get("final", 0)) / 100.0,
+                            "original_price": float(price_overview.get("initial", 0)) / 100.0,
+                            "discount_percent": float(price_overview.get("discount_percent", 0)),
+                            "currency": price_overview.get("currency", "INR" if country_code == "in" else "USD"),
+                        }
+    except Exception as exc:
+        logger.warning(f"Failed to fetch live Steam price for appid {steam_appid}: {exc}")
+    return None
+
+
+async def sync_live_steam_prices(db: AsyncSession) -> int:
+    """
+    Sync real live prices directly from Steam Store API for all games in local database.
+    Replaces any static or stale price data with exact current Steam Store prices.
+    """
+    from app.models.deal import Store, GamePrice
+    
+    # Get Steam store
+    store_res = await db.execute(select(Store).where(Store.slug == "steam"))
+    steam_store = store_res.scalars().first()
+    if not steam_store:
+        steam_store = Store(
+            name="Steam",
+            slug="steam",
+            cheapshark_store_id="1",
+            icon_url="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg",
+        )
+        db.add(steam_store)
+        await db.flush()
+
+    games_res = await db.execute(select(Game).where(Game.steam_appid != None))
+    games = games_res.scalars().all()
+    
+    now = datetime.now(timezone.utc)
+    updated_count = 0
+
+    for game in games:
+        for cc, currency in [("in", "INR"), ("us", "USD")]:
+            steam_price_data = await fetch_steam_live_price(game.steam_appid, country_code=cc)
+            if not steam_price_data:
+                continue
+
+            price = steam_price_data["price"]
+            orig_price = steam_price_data["original_price"]
+            discount = steam_price_data["discount_percent"]
+            deal_url = f"https://store.steampowered.com/app/{game.steam_appid}"
+
+            # Check if GamePrice record exists
+            gp_stmt = select(GamePrice).where(
+                GamePrice.game_id == game.id,
+                GamePrice.store_id == steam_store.id,
+                GamePrice.currency == currency,
+            )
+            gp_res = await db.execute(gp_stmt)
+            gp = gp_res.scalars().first()
+
+            if gp:
+                gp.price = price
+                gp.original_price = orig_price
+                gp.discount_percent = discount
+                gp.deal_url = deal_url
+                gp.recorded_at = now
+            else:
+                gp = GamePrice(
+                    game_id=game.id,
+                    store_id=steam_store.id,
+                    country="IN" if currency == "INR" else "US",
+                    currency=currency,
+                    price=price,
+                    original_price=orig_price,
+                    discount_percent=discount,
+                    deal_url=deal_url,
+                    recorded_at=now,
+                )
+                db.add(gp)
+            updated_count += 1
+
+    await db.commit()
+    logger.info(f"Successfully synced {updated_count} live Steam store prices from official Valve API.")
+    return updated_count
+
+

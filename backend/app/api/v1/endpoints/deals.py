@@ -8,6 +8,7 @@ from app.models.deal import Store, GamePrice
 from app.models.game import Game
 from app.schemas.deal import StoreSchema, DealSummarySchema, DealListResponse
 from app.services.deals import seed_stores_and_deals, sync_live_cheapshark_deals
+from app.services.steam import sync_live_steam_prices
 
 router = APIRouter()
 
@@ -35,9 +36,11 @@ async def list_deals(
     """
     await seed_stores_and_deals(db)
     try:
+        await sync_live_steam_prices(db)
         await sync_live_cheapshark_deals(db)
     except Exception as e:
         pass
+
 
 
     # Join GamePrice, Game, and Store
