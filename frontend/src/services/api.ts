@@ -6,8 +6,9 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 8000,
+  timeout: 20000,
 });
+
 
 export const checkHealth = async (): Promise<HealthStatus> => {
   const response = await apiClient.get<HealthStatus>('/health');

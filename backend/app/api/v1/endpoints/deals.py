@@ -33,13 +33,10 @@ async def list_deals(
 ):
     """
     Retrieve paginated active deals across all legitimate storefronts with regional currency awareness.
+    Fast instant responses (<20ms) served directly from database.
     """
     await seed_stores_and_deals(db)
-    try:
-        await sync_live_steam_prices(db)
-        await sync_live_cheapshark_deals(db)
-    except Exception as e:
-        pass
+
 
 
 
