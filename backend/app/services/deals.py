@@ -304,16 +304,121 @@ class CheapSharkClient:
 
     BASE_URL = "https://www.cheapshark.com/api/1.0"
 
-    async def fetch_deals(self, page: int = 0, page_size: int = 20) -> List[Dict[str, Any]]:
+    async def fetch_deals(self, page: int = 0, page_size: int = 30) -> List[Dict[str, Any]]:
         """Retrieve latest PC game deals from CheapShark."""
         async with httpx.AsyncClient(timeout=10.0) as client:
             try:
                 response = await client.get(
                     f"{self.BASE_URL}/deals",
-                    params={"pageNumber": page, "pageSize": page_size, "sortBy": "Deal Rating"}
+                    params={"pageNumber": page, "pageSize": page_size, "sortBy": "Savings", "upperPrice": 50}
                 )
                 if response.status_code == 200:
                     return response.json()
             except Exception as e:
                 logger.error(f"Failed to fetch deals from CheapShark: {e}")
         return []
+
+
+async def sync_live_cheapshark_deals(db: AsyncSession) -> int:
+    """Fetch live PC deals from CheapShark API and update database in real time."""
+    client = CheapSharkClient()
+    live_deals = await client.fetch_deals(page=0, page_size=40)
+    if not live_deals:
+        return 0
+
+    # Map existing stores by cheapshark_store_id
+    stores_res = await db.execute(select(Store))
+    stores_by_cs_id = {s.cheapshark_store_id: s for s in stores_res.scalars().all() if s.cheapshark_store_id}
+
+    USD_TO_INR_RATE = 83.5
+    now = datetime.now(timezone.utc)
+    synced_count = 0
+
+    for deal in live_deals:
+        cs_store_id = str(deal.get("storeID"))
+        store = stores_by_cs_id.get(cs_store_id)
+        if not store:
+            continue
+
+        title = deal.get("title")
+        if not title:
+            continue
+
+        raw_savings = float(deal.get("savings", 0.0))
+        sale_usd = float(deal.get("salePrice", 0.0))
+        normal_usd = float(deal.get("normalPrice", 0.0))
+        steam_appid = int(deal.get("steamAppID")) if deal.get("steamAppID") and deal.get("steamAppID").isdigit() else None
+        deal_id = deal.get("dealID")
+        deal_url = f"https://www.cheapshark.com/redirect?dealID={deal_id}" if deal_id else f"https://store.steampowered.com/app/{steam_appid}"
+
+        slug = title.lower().replace(" ", "-").replace(":", "").replace("'", "").replace("&", "and")
+
+        # Find or create game
+        stmt = select(Game).where(Game.title == title)
+        res = await db.execute(stmt)
+        game = res.scalars().first()
+
+        if not game and steam_appid:
+            stmt_steam = select(Game).where(Game.steam_appid == steam_appid)
+            res_steam = await db.execute(stmt_steam)
+            game = res_steam.scalars().first()
+
+        thumb = deal.get("thumb") or (f"https://cdn.cloudflare.steamstatic.com/steam/apps/{steam_appid}/header.jpg" if steam_appid else None)
+
+        if not game:
+            game = Game(
+                slug=slug,
+                title=title,
+                description=f"{title} - Discovered via live CheapShark store feed.",
+                steam_appid=steam_appid,
+                rating=float(deal.get("steamRatingPercent", 80)) / 20.0 if deal.get("steamRatingPercent") else 4.0,
+                metacritic=int(deal.get("metacriticScore")) if deal.get("metacriticScore") and deal.get("metacriticScore").isdigit() else None,
+                cover_image=thumb,
+                background_image=thumb,
+                genres=["Action", "PC"],
+                platforms=["PC"],
+                is_popular=(raw_savings >= 50),
+            )
+            db.add(game)
+            await db.flush()
+
+        # Update or create GamePrice for USD and INR
+        for curr, rate in [("USD", 1.0), ("INR", USD_TO_INR_RATE)]:
+            curr_sale = round(sale_usd * rate, 2 if curr == "USD" else 0)
+            curr_normal = round(normal_usd * rate, 2 if curr == "USD" else 0)
+            country = "US" if curr == "USD" else "IN"
+
+            # Check existing GamePrice
+            gp_stmt = select(GamePrice).where(
+                GamePrice.game_id == game.id,
+                GamePrice.store_id == store.id,
+                GamePrice.currency == curr,
+            )
+            gp_res = await db.execute(gp_stmt)
+            gp = gp_res.scalars().first()
+
+            if gp:
+                gp.price = curr_sale
+                gp.original_price = curr_normal
+                gp.discount_percent = raw_savings
+                gp.deal_url = deal_url
+                gp.recorded_at = now
+            else:
+                gp = GamePrice(
+                    game_id=game.id,
+                    store_id=store.id,
+                    country=country,
+                    currency=curr,
+                    price=curr_sale,
+                    original_price=curr_normal,
+                    discount_percent=raw_savings,
+                    deal_url=deal_url,
+                    recorded_at=now,
+                )
+                db.add(gp)
+            synced_count += 1
+
+    await db.commit()
+    logger.info(f"Successfully synced {synced_count} live deal prices from CheapShark.")
+    return synced_count
+
